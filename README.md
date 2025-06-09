@@ -33,7 +33,7 @@ Siga os passos abaixo para colocar o "Lab Escape" para rodar no seu computador:
 4.  **Execute o jogo:**
     Agora você está pronto para jogar! Rode o programa principal:
     ```bash
-    python main.py
+    python src/main.py
     ```
 
 ---
