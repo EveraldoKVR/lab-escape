@@ -1,4 +1,7 @@
 # Constantes do jogo
+import os
+
+
 WIDTH, HEIGHT = 800, 600
 FPS = 60
 
@@ -18,6 +21,7 @@ YELLOW = (220, 220, 0)
 IMAGE_DIR = "assets/images/"
 SOUND_DIR = "assets/sounds/"
 HIGHSCORE_FILE = "highscore.dat"
+LEVEL_IMAGES_DIR = os.path.join(IMAGE_DIR, 'levels')
 
 # Configurações do jogo
 STORY_DISPLAY_SPEED_MS = 40 # Milissegundos por caractere na história

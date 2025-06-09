@@ -66,7 +66,7 @@ class Level:
         
         time_text = f"Tempo restante: {int(self.timer.get_remaining_time())}s"
         time_surf = self.game.fonts['text'].render(time_text, True, self.game.colors['timer'])
-        self.game.screen.blit(time_surf, (WIDTH//2 - time_surf.get_width()//2, 320))
+        self.game.screen.blit(time_surf, (WIDTH//2 - time_surf.get_width()//2, 360))
 
 class Level1(Level):
     """Primeiro nível do jogo - Soma de números primos"""
@@ -76,6 +76,9 @@ class Level1(Level):
         self.question = "A senha é a soma dos números primos entre 10 e 20."
         self.correct_answer = "60" # Primos: 11, 13, 17, 19. Soma = 60
         self.input_box = InputBox(WIDTH//2 - 100, 200, 200, 40, self.game.fonts['text'])
+        
+        
+        
     
     def handle_event(self, event):
         answer = self.input_box.handle_event(event)
@@ -87,11 +90,12 @@ class Level1(Level):
             self.message = "Correta! Porta desbloqueada."
             self.game.score += 100
             self.completed = True
-#            self.game.sound_manager.play('correct')
+        #    self.game.sound_manager.play('correct')
             self.game.state = GameState.LEVEL_COMPLETE
         else:
             self.message = "Incorreta. Tente novamente."
-            self.game.sound_manager.play('wrong')
+            
+            # self.game.sound_manager.play('wrong')
     
     def render(self):
         self._render_common_elements()
@@ -114,11 +118,11 @@ class Level2(Level):
             self.message = "Correta! Sequência decifrada."
             self.game.score += 100
             self.completed = True
-            self.game.sound_manager.play('correct')
+        #    self.game.sound_manager.play('correct')
             self.game.state = GameState.LEVEL_COMPLETE
         else:
             self.message = "Incorreta. Tente novamente."
-            self.game.sound_manager.play('wrong')
+            # self.game.sound_manager.play('wrong')
     
     def render(self):
         self._render_common_elements()
@@ -146,14 +150,14 @@ class Level3(Level):
                 self.message = "Correta! Equação resolvida."
                 self.game.score += 100
                 self.completed = True
-                self.game.sound_manager.play('correct')
+            #    self.game.sound_manager.play('correct')
                 self.game.state = GameState.LEVEL_COMPLETE
             else:
                 self.message = "Incorreta. Tente novamente."
-                self.game.sound_manager.play('wrong')
+                # self.game.sound_manager.play('wrong')
         except ValueError:
             self.message = "Entrada inválida. Digite um número."
-            self.game.sound_manager.play('wrong')
+        #    self.game.sound_manager.play('wrong')
     
     def render(self):
         self._render_common_elements()
@@ -183,12 +187,12 @@ class Level4(Level):
                         if self.total == 50:
                             self.completed = True
                             self.game.score += 100
-                            self.game.sound_manager.play('correct')
+                          #  self.game.sound_manager.play('correct')
                             self.game.state = GameState.LEVEL_COMPLETE
                         elif self.total > 50:
                             self.total = 0
                             self.selected = []
-                            self.game.sound_manager.play('wrong')
+                           # self.game.sound_manager.play('wrong')
     
     def render(self):
         question_surf = self.game.fonts['text'].render(self.question, True, self.game.colors['text'])

@@ -63,18 +63,27 @@ class LabEscapeGame:
         self.menu_background = pygame.transform.scale(self.menu_background, (WIDTH, HEIGHT))
 
         self.postit_img = pygame.image.load(os.path.join(IMAGE_DIR, 'postit.jpg'))
-        self.postit_img = pygame.transform.scale(self.postit_img, (600, 300))
+        self.postit_img = pygame.transform.scale(self.postit_img, (WIDTH, HEIGHT))
+        
+        # Carregar imagens dos níveis e armazená-las em um dicionário
+        self.level_images = {}
+        for i in range(1, self.max_level + 1):
+            try:
+                img = pygame.image.load(os.path.join(LEVEL_IMAGES_DIR, F'level{i}.png'))
+                self.level_images.update({i: pygame.transform.scale(img, (WIDTH, HEIGHT))})
+                print(f"Imagem do nível {i} carregada com sucesso.") # Mensagem para verificar se carregou
+            except pygame.error as e:
+                print(f"Erro ao carregar a imagem do nível {i}: {e}")
+                self.level_images.update({i: None}) # Armazena None se a imagem não carregar
+
 
         # Propriedades para a história
-        self.story_text = [
-            "Olá, estagiário! Que bom que você aceitou",
-            "participar do experimento mais recente",
-            "do nosso laboratório. Hoje, seu desafio",
-            "é desvendar os segredos dos nossos",
-            "enigmas tecnológicos. A cada sala,",
-            "um novo desafio aguarda você. Prepare-se",
-            "para testar sua lógica e rapidez. Lembre-se,",
-            "o tempo é crucial! Boa sorte e divirta-se!"
+        self.story_text = lines = [
+        "Você é um jovem estagiário em um laboratório futurista.",
+        "Acidentalmente, ativa um sistema de lockdown!",
+        "Resolva enigmas para escapar antes que o oxigênio acabe!",
+        "                                                        ",
+        "                                                        "
         ]
         self.current_story_line_index = 0
         self.current_char_index = 0
@@ -91,18 +100,19 @@ class LabEscapeGame:
             'button': pygame.font.SysFont("arial", 28, bold=True),
             'score': pygame.font.SysFont("arial", 20),
             'story': pygame.font.SysFont("arial", 20)
+            
         }
     
     def _define_colors(self):
         """Define as cores usadas no jogo"""
         return {
-            'background': WHITE,
-            'text': BLACK,
+            'background': BLACK,
+            'text': WHITE,
             'button': BLUE,
             'button_hover': DARK_BLUE,
             'correct': GREEN,
             'wrong': RED,
-            'timer': YELLOW
+            'timer': WHITE
         }
     
     def load_high_score(self):
@@ -172,7 +182,7 @@ class LabEscapeGame:
                         self.state = GameState.PLAYING
                 elif self.state in (GameState.GAME_COMPLETE, GameState.GAME_OVER):
                     self._reset_game()
-                self.sound_manager.play('click')
+#                self.sound_manager.play('click')
     
     def _update(self):
         """Atualiza o estado do jogo"""
@@ -197,7 +207,18 @@ class LabEscapeGame:
         elif self.state == GameState.STORY:
             self._render_story()
         elif self.state == GameState.PLAYING:
+              # Renderiza a imagem de fundo do nível atual, se existir
+            if self.current_level in self.level_images and self.level_images.get(self.current_level) is not None:
+                self.screen.blit(self.level_images.get(self.current_level), (0, 0))
+            else:
+                # Se a imagem do nível não foi carregada, renderiza um fundo padrão com uma mensagem
+                self.screen.fill(self.colors['background'])
+                mensagem_erro = self.fonts['text'].render(f"Imagem do Nível {self.current_level} não encontrada!", True, RED)
+                self.screen.blit(mensagem_erro, (WIDTH // 2 - mensagem_erro.get_width() // 2, HEIGHT // 2 - mensagem_erro.get_height() // 2))
+
+            # Depois de renderizar o fundo, renderiza os elementos específicos do nível
             self.level_manager.render()
+            
         elif self.state == GameState.LEVEL_COMPLETE:
             self._render_level_complete()
         elif self.state == GameState.GAME_COMPLETE:
@@ -242,8 +263,8 @@ class LabEscapeGame:
         postit_y = (HEIGHT - self.postit_img.get_height()) // 2
         self.screen.blit(self.postit_img, (postit_x, postit_y))
 
-        text_start_x = postit_x + 50
-        text_start_y = postit_y + 60
+        text_start_x = postit_x + 200
+        text_start_y = postit_y + 200
         line_height = self.fonts['story'].get_height() + 5
 
         for i in range(self.current_story_line_index + 1):
@@ -281,6 +302,7 @@ class LabEscapeGame:
         self.current_char_index = 0
         self.story_complete = False
         self.story_display_timer = pygame.time.get_ticks()
+        
 
     def _render_level_complete(self):
         """Renderiza a tela de conclusão de nível"""
